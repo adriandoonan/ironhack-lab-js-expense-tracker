@@ -43,14 +43,14 @@ class Budget {
             this.entries.push(entry)
         }
         catch(e) {
-                console.log(e)
+                console.error(e)
         }
     }
     getTotalIncome() {
         let totalIncome = 0;
         this.entries.forEach(entry => {
             if (entry.type === 'income') {
-                totalIncome += entry.amount
+                totalIncome += Number(entry.amount)
             }
         })
         return totalIncome
@@ -59,15 +59,38 @@ class Budget {
         let totalExpense = 0;
         this.entries.forEach(entry => {
             if (entry.type === 'expense') {
-                totalExpense += entry.amount
+                totalExpense += Number(entry.amount)
             }
         })
         return totalExpense
     }
+    getTotal(type) {
+        try {
+            if (!['expense','income'].includes(type)) {
+                throw new Error('type needs to be either expense or income')
+            }
+            let total = 0;
+            this.entries.forEach(entry => {
+                if (entry.type === type) {
+                    total += Number(entry.amount)
+                }
+            })
+            return total
+        }
+        catch(e) {
+            console.error(e)
+        }
+       
+    }
     getCurrentBalance() {
-        
         return this.getTotalIncome() - this.getTotalExpense()
     }
+    getFormattedEntries() {
+        const formattedEntries = [];
+        this.entries.forEach(entry => {
+            formattedEntries.push(`${entry.date} | ${entry.description} | ${entry.type == 'income' ? '+' : ''}${entry.getFormattedAmount()}`)
+        })
+        return formattedEntries
+    }
 }
-
 
